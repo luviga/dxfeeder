@@ -1,0 +1,251 @@
+# Settings of dxfeeder.
+#
+# Every numeric constant of the package lives in this file, never in the code.
+# Each setting is one table with three keys:
+#   value   the number, text or list that the code reads
+#   label   SOURCE, ASSUMPTION or ESTIMATION
+#   reason  for SOURCE, the external address (URL, DOI or permalink with commit hash);
+#           for ASSUMPTION or ESTIMATION, one or two plain sentences that explain the value
+# A table may also group settings, and then each setting inside it follows the same rule.
+
+# Feeder generator: inputs read from OpenStreetMap.
+
+[street_highway_values]
+value = ["motorway", "motorway_link", "trunk", "trunk_link", "primary", "primary_link", "secondary", "secondary_link", "tertiary", "tertiary_link", "residential", "unclassified", "service"]
+label = "ASSUMPTION"
+reason = "Drivable street classes from motorway down to residential, plus unclassified and service roads, with the link roads of each class (tag values listed at https://wiki.openstreetmap.org/wiki/Key:highway). Feeders follow streets that a line crew can drive along; footways, paths and tracks are left out."
+
+[building_skipped_values]
+value = ["no"]
+label = "ASSUMPTION"
+reason = "A building tag with the value no marks a feature that is not a building (https://wiki.openstreetmap.org/wiki/Key:building), so it gives no load."
+
+[substation_tag_key]
+value = "power"
+label = "SOURCE"
+reason = "OpenStreetMap tags a substation with power=substation (https://wiki.openstreetmap.org/wiki/Tag:power%3Dsubstation)."
+
+[substation_tag_value]
+value = "substation"
+label = "SOURCE"
+reason = "OpenStreetMap tags a substation with power=substation (https://wiki.openstreetmap.org/wiki/Tag:power%3Dsubstation)."
+
+# Feeder generator: loads and voltages.
+
+[load_kw_default]
+value = 5.0
+label = "ASSUMPTION"
+reason = "Every building carries the same 5 kW load, a placeholder for residential diversified demand until measured load profiles are attached."
+
+[load_pf]
+value = 0.95
+label = "ASSUMPTION"
+reason = "Every load has a power factor of 0.95 lagging, a placeholder typical of residential demand."
+
+[mv_kv]
+value = 12.47
+label = "ASSUMPTION"
+reason = "Every feeder runs at 12.47 kV line to line, a common North American distribution class and the medium voltage of the SMART-DS Austin feeders. The voltage tag of a substation never sets the feeder voltage, because it names the transmission side."
+
+[lv_kv]
+value = 0.24
+label = "ASSUMPTION"
+reason = "Every load is served at 0.24 kV, the North American residential secondary voltage."
+
+# Feeder generator: routes, feeders and transformers.
+
+[snap_m]
+value = 30.0
+label = "ASSUMPTION"
+reason = "A vertex of a mapped distribution line within 30 m of a street node joins that node; mapped lines usually run along the street edge, within a road width of its centre line."
+
+[forced_route_weight_factor]
+value = 0.01
+label = "ASSUMPTION"
+reason = "A mapped distribution line segment weighs 1 percent of its length in the shortest path search, so feeders prefer mapped routes without being barred from streets."
+
+[loads_per_transformer_max]
+value = 12
+label = "ASSUMPTION"
+reason = "A distribution transformer serves at most 12 loads, in the range of a pole or pad transformer serving a group of houses."
+
+[transformer_radius_m]
+value = 150.0
+label = "ASSUMPTION"
+reason = "A load joins a transformer only within 150 m along the service drop and the tree, the reach of a low voltage secondary."
+
+[transformer_loading_factor]
+value = 0.8
+label = "ASSUMPTION"
+reason = "A transformer is sized so that its loads use 80 percent of its rating, leaving a margin for growth and peaks."
+
+[transformer_sizes_kva]
+value = [10.0, 15.0, 25.0, 37.5, 50.0, 75.0, 100.0, 167.0, 250.0, 333.0, 500.0]
+label = "ASSUMPTION"
+reason = "Standard ratings of distribution transformers in North American practice; each transformer takes the smallest rating at or above its sized load."
+
+[transformer_pct_r]
+value = 1.0
+label = "ASSUMPTION"
+reason = "Each distribution transformer has a winding resistance of 1 percent on its own rating, a typical value for small units."
+
+[transformer_xhl_pct]
+value = 2.0
+label = "ASSUMPTION"
+reason = "Each distribution transformer has a leakage reactance of 2 percent on its own rating, a typical value for small units."
+
+[line_length_min_m]
+value = 1.0
+label = "ASSUMPTION"
+reason = "A line shorter than 1 m is written as 1 m long, so that no line of zero impedance enters the model."
+
+# Feeder generator: line codes and source.
+
+[mv_r_self_ohm_per_km]
+value = 0.3635667
+label = "SOURCE"
+reason = "Self resistance of the SMART-DS line code 3P_OH_AL_ACSR_4/0_Penguin_3, used for every medium voltage line (https://oedi-data-lake.s3.amazonaws.com/SMART-DS/v1.0/2018/AUS/P2U/scenarios/base_timeseries/opendss_no_loadshapes/p2uhs12_1247/p2uhs12_1247--p2udt5222/LineCodes.dss)."
+
+[mv_r_mutual_ohm_per_km]
+value = 0.09006667
+label = "SOURCE"
+reason = "Mutual resistance of the same SMART-DS line code 3P_OH_AL_ACSR_4/0_Penguin_3 (https://oedi-data-lake.s3.amazonaws.com/SMART-DS/v1.0/2018/AUS/P2U/scenarios/base_timeseries/opendss_no_loadshapes/p2uhs12_1247/p2uhs12_1247--p2udt5222/LineCodes.dss)."
+
+[mv_x_self_ohm_per_km]
+value = 0.6385333
+label = "SOURCE"
+reason = "Self reactance of the same SMART-DS line code 3P_OH_AL_ACSR_4/0_Penguin_3 (https://oedi-data-lake.s3.amazonaws.com/SMART-DS/v1.0/2018/AUS/P2U/scenarios/base_timeseries/opendss_no_loadshapes/p2uhs12_1247/p2uhs12_1247--p2udt5222/LineCodes.dss)."
+
+[mv_x_mutual_ohm_per_km]
+value = 0.2202333
+label = "SOURCE"
+reason = "Mutual reactance of the same SMART-DS line code 3P_OH_AL_ACSR_4/0_Penguin_3 (https://oedi-data-lake.s3.amazonaws.com/SMART-DS/v1.0/2018/AUS/P2U/scenarios/base_timeseries/opendss_no_loadshapes/p2uhs12_1247/p2uhs12_1247--p2udt5222/LineCodes.dss)."
+
+[lv_r_self_ohm_per_km]
+value = 0.7166333333333332
+label = "SOURCE"
+reason = "Self resistance of the SMART-DS secondary line code 1P_OH_AL_2/0_Rucina_2, applied to the three conductors of every service line (https://oedi-data-lake.s3.amazonaws.com/SMART-DS/v1.0/2018/AUS/P2U/scenarios/base_timeseries/opendss_no_loadshapes/p2uhs12_1247/p2uhs12_1247--p2udt5222/LineCodes.dss). The source code has two conductors; using its values for three is a stated simplification."
+
+[lv_r_mutual_ohm_per_km]
+value = 0.28753333333333336
+label = "SOURCE"
+reason = "Mutual resistance of the same SMART-DS line code 1P_OH_AL_2/0_Rucina_2 (https://oedi-data-lake.s3.amazonaws.com/SMART-DS/v1.0/2018/AUS/P2U/scenarios/base_timeseries/opendss_no_loadshapes/p2uhs12_1247/p2uhs12_1247--p2udt5222/LineCodes.dss)."
+
+[lv_x_self_ohm_per_km]
+value = 0.28883333333333333
+label = "SOURCE"
+reason = "Self reactance of the same SMART-DS line code 1P_OH_AL_2/0_Rucina_2 (https://oedi-data-lake.s3.amazonaws.com/SMART-DS/v1.0/2018/AUS/P2U/scenarios/base_timeseries/opendss_no_loadshapes/p2uhs12_1247/p2uhs12_1247--p2udt5222/LineCodes.dss)."
+
+[lv_x_mutual_ohm_per_km]
+value = 0.1932333333333333
+label = "SOURCE"
+reason = "Mutual reactance of the same SMART-DS line code 1P_OH_AL_2/0_Rucina_2 (https://oedi-data-lake.s3.amazonaws.com/SMART-DS/v1.0/2018/AUS/P2U/scenarios/base_timeseries/opendss_no_loadshapes/p2uhs12_1247/p2uhs12_1247--p2udt5222/LineCodes.dss)."
+
+[source_pu]
+value = 1.0
+label = "SOURCE"
+reason = "Each voltage source is set to 1.0 per unit, as the SMART-DS Austin master sets its source (https://oedi-data-lake.s3.amazonaws.com/SMART-DS/v1.0/2018/AUS/P2U/scenarios/base_timeseries/opendss_no_loadshapes/p2uhs12_1247/Master.dss)."
+
+[source_r1_ohm]
+value = 0.00001
+label = "SOURCE"
+reason = "Positive sequence source resistance of the SMART-DS Austin master, a near ideal source (https://oedi-data-lake.s3.amazonaws.com/SMART-DS/v1.0/2018/AUS/P2U/scenarios/base_timeseries/opendss_no_loadshapes/p2uhs12_1247/Master.dss)."
+
+[source_x1_ohm]
+value = 0.00001
+label = "SOURCE"
+reason = "Positive sequence source reactance of the SMART-DS Austin master (https://oedi-data-lake.s3.amazonaws.com/SMART-DS/v1.0/2018/AUS/P2U/scenarios/base_timeseries/opendss_no_loadshapes/p2uhs12_1247/Master.dss)."
+
+[source_r0_ohm]
+value = 0.00001
+label = "SOURCE"
+reason = "Zero sequence source resistance of the SMART-DS Austin master (https://oedi-data-lake.s3.amazonaws.com/SMART-DS/v1.0/2018/AUS/P2U/scenarios/base_timeseries/opendss_no_loadshapes/p2uhs12_1247/Master.dss)."
+
+[source_x0_ohm]
+value = 0.00001
+label = "SOURCE"
+reason = "Zero sequence source reactance of the SMART-DS Austin master (https://oedi-data-lake.s3.amazonaws.com/SMART-DS/v1.0/2018/AUS/P2U/scenarios/base_timeseries/opendss_no_loadshapes/p2uhs12_1247/Master.dss)."
+
+# Feeder generator: number formats of the written files.
+
+[metres_per_km]
+value = 1000.0
+label = "SOURCE"
+reason = "One kilometre is 1000 metres by the SI definition of the kilo prefix (https://www.bipm.org/en/publications/si-brochure)."
+
+[length_decimals]
+value = 6
+label = "ASSUMPTION"
+reason = "Line lengths are written in km with 6 decimals, a resolution of 1 mm; the format only fixes the bytes of the files."
+
+[coordinate_decimals]
+value = 7
+label = "ASSUMPTION"
+reason = "Bus coordinates are written in degrees with 7 decimals, about 1 cm on the ground; the format only fixes the bytes of the files."
+
+# Verification.
+
+[energized_voltage_min_pu]
+value = 0.0
+label = "ASSUMPTION"
+reason = "A load counts as connected when its bus voltage after the snapshot solve is above zero per unit, the plain reading of an energized bus."
+
+[distribution_transformer_lv_max_kv]
+value = 1.0
+label = "ASSUMPTION"
+reason = "A transformer counts as a distribution transformer when its lowest winding is at or below 1 kV, the upper limit of low voltage in IEC 60038 (https://webstore.iec.ch/en/publication/153)."
+
+[convergence_words]
+value = ["converge", "max control iterations"]
+label = "ASSUMPTION"
+reason = "OpenDSS messages that hold one of these words report a solve that did not converge rather than a definition error, so they count against the solve and not against the compile."
+
+[length_units]
+value = ["none", "mi", "kft", "km", "m", "ft", "in", "cm", "mm"]
+label = "SOURCE"
+reason = "Order of the OpenDSS line length unit codes 0 to 8, as listed for the Units property of the Line object (https://opendss.epri.com/Line.html). Each name points at a length_unit_km setting."
+
+[length_unit_km_none]
+value = 1.0
+label = "ASSUMPTION"
+reason = "A line with Units=none is read as kilometres. OpenDSS then takes the length in the units of its line code; the case is counted and reported."
+
+[length_unit_km_mi]
+value = 1.609344
+label = "SOURCE"
+reason = "One international mile is 1.609344 km (NIST Handbook 44, Appendix C, https://www.nist.gov/pml/owm/publications/nist-handbooks/handbook-44)."
+
+[length_unit_km_kft]
+value = 0.3048
+label = "SOURCE"
+reason = "One thousand international feet is 0.3048 km (NIST Handbook 44, Appendix C, https://www.nist.gov/pml/owm/publications/nist-handbooks/handbook-44)."
+
+[length_unit_km_km]
+value = 1.0
+label = "SOURCE"
+reason = "Identity conversion for lengths already in kilometres."
+
+[length_unit_km_m]
+value = 0.001
+label = "SOURCE"
+reason = "One metre is 0.001 km by the SI kilo prefix (https://www.bipm.org/en/publications/si-brochure)."
+
+[length_unit_km_ft]
+value = 0.0003048
+label = "SOURCE"
+reason = "One international foot is 0.0003048 km (NIST Handbook 44, Appendix C, https://www.nist.gov/pml/owm/publications/nist-handbooks/handbook-44)."
+
+[length_unit_km_in]
+value = 0.0000254
+label = "SOURCE"
+reason = "One inch is 0.0000254 km (NIST Handbook 44, Appendix C, https://www.nist.gov/pml/owm/publications/nist-handbooks/handbook-44)."
+
+[length_unit_km_cm]
+value = 0.00001
+label = "SOURCE"
+reason = "One centimetre is 0.00001 km by the SI prefixes (https://www.bipm.org/en/publications/si-brochure)."
+
+[length_unit_km_mm]
+value = 0.000001
+label = "SOURCE"
+reason = "One millimetre is 0.000001 km by the SI prefixes (https://www.bipm.org/en/publications/si-brochure)."
